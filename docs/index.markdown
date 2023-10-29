@@ -7,8 +7,6 @@ title: Home page
 permalink: /
 ---
 
-This is the home page
-
 {% for post in site.posts %}
   <article>
     <h2>
