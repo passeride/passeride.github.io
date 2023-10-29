@@ -1,10 +1,3 @@
----
-layout: post
-title:  "My seonc post!"
-date:   2023-10-30 16:17:57 +0200
-categories: jekyll update
-regenerate: true
----
 
 # Does this still work, and what date does it pick?
 
@@ -31,4 +24,4 @@ __very italic__
 
 
 ## Testing images
-![dalle3 image](/assets/dalle-3-norwegian.png)
+![dalle3 image](./assets/images/dalle-3-norwegian.png)
