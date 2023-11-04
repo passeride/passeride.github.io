@@ -193,7 +193,8 @@ I found out that giving Pacman everything, ment that it sometimes did not downlo
 
 This line seems to help with not stopping on typos
 ```bash
-cat ArchRepos.txt | xargs -I % sudo pacman -S --noconfirm %
+cat ArchRepos.txt | xargs -I % sudo pacman -S --noconfirm --needed %
+cat AurRepos.txt | xargs -I % yay -S --noconfirm --needed %
 ```
 
 And for doing dangerous things, i think a better aproach is to generate a script and mabye force the user to copy paste it into the terminal, giving them time to discover if it does something very wierd.
