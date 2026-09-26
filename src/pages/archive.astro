@@ -1,0 +1,6 @@
+---
+import {getCollection} from 'astro:content'; import BaseLayout from '../layouts/BaseLayout.astro';
+const posts=await getCollection('posts',({data})=>!data.draft); const notes=await getCollection('notes',({data})=>!data.draft);
+const entries=[...posts.map(e=>({title:e.data.title,date:e.data.date,href:'/articles/'+e.id+'/',kind:'article'})),...notes.map(e=>({title:e.data.title??'Note',date:e.data.date,href:'/notes/'+e.id+'/',kind:'note'}))].sort((a,b)=>b.date.getTime()-a.date.getTime());
+---
+<BaseLayout title="Archive"><section class="hero"><div class="kicker">ARCHIVE</div><h1>Everything</h1></section>{entries.map(e=><a class="archive-row" href={e.href}><time>{e.date.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</time><span>{e.title}</span><small>{e.kind}</small></a>)}</BaseLayout>

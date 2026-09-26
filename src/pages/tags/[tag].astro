@@ -1,0 +1,6 @@
+---
+import {getCollection} from 'astro:content'; import BaseLayout from '../../layouts/BaseLayout.astro';
+export async function getStaticPaths(){const posts=await getCollection('posts',({data})=>!data.draft);const notes=await getCollection('notes',({data})=>!data.draft);const projects=await getCollection('projects',({data})=>!data.draft);const tags=[...new Set([...posts.flatMap(e=>e.data.tags),...notes.flatMap(e=>e.data.tags),...projects.flatMap(e=>e.data.tags)].map(t=>t.toLowerCase()))];return tags.map(tag=>({params:{tag},props:{tag,entries:[...posts.filter(e=>e.data.tags.some(t=>t.toLowerCase()===tag)).map(e=>({title:e.data.title,href:'/articles/'+e.id+'/',kind:'article'})),...notes.filter(e=>e.data.tags.some(t=>t.toLowerCase()===tag)).map(e=>({title:e.data.title??'Note',href:'/notes/'+e.id+'/',kind:'note'})),...projects.filter(e=>e.data.tags.some(t=>t.toLowerCase()===tag)).map(e=>({title:e.data.title,href:'/projects/'+e.id+'/',kind:'project'}))]}}));}
+const {tag,entries}=Astro.props;
+---
+<BaseLayout title={'#'+tag}><section class="hero"><div class="kicker">TAG</div><h1>#{tag}</h1></section>{entries.map((e:any)=><a class="archive-row" href={e.href}><span></span><span>{e.title}</span><small>{e.kind}</small></a>)}</BaseLayout>
