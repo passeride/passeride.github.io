@@ -1,7 +1,31 @@
 ---
-import {getCollection,render} from 'astro:content';
+import {getCollection} from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-const posts=await getCollection('posts',({data})=>!data.draft); const notes=await getCollection('notes',({data})=>!data.draft);
-const feed=[...posts.map(e=>({kind:'article',date:e.data.date,title:e.data.title,href:'/articles/'+e.id+'/',tags:e.data.tags,entry:e})),...notes.map(e=>({kind:'note',date:e.data.date,title:e.data.title,href:'/notes/'+e.id+'/',tags:e.data.tags,entry:e}))].sort((a,b)=>b.date.getTime()-a.date.getTime()).slice(0,20);
+
+const posts=await getCollection('posts',({data})=>!data.draft);
+const notes=await getCollection('notes',({data})=>!data.draft);
+const feed=[
+  ...posts.map(e=>({kind:'article',date:e.data.date,title:e.data.title,href:'/articles/'+e.id+'/',tags:e.data.tags,description:e.data.description})),
+  ...notes.map(e=>({kind:'note',date:e.data.date,title:e.data.title??'Untitled note',href:'/notes/'+e.id+'/',tags:e.data.tags,description:undefined}))
+].sort((a,b)=>b.date.getTime()-a.date.getTime()).slice(0,20);
 ---
-<BaseLayout><section class="hero"><div class="kicker">PASSERIDE NOTES</div><h1>Notes, projects and longer writings.</h1><p>Small technical observations and longer write-ups, kept in Markdown and published as a static site.</p></section><section class="feed">{await Promise.all(feed.map(async item=>{const rendered=item.kind==='note'?await render(item.entry as any):null; return <article class="entry"><div class="meta"><time>{item.date.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</time><span>{item.kind}</span></div>{item.title&&<h2><a href={item.href}>{item.title}</a></h2>}{rendered&&<div class="prose"><rendered.Content/></div>}<div class="tags">{item.tags.map((tag:string)=><a href={'/tags/'+tag.toLowerCase()+'/'}>#{tag}</a>)}</div></article>}))}</section></BaseLayout>
+<BaseLayout>
+  <section class="hero">
+    <div class="kicker">PASSERIDE NOTES</div>
+    <h1>Notes, projects and longer writings.</h1>
+    <p>Small technical observations and longer write-ups, kept in Markdown and published as a static site.</p>
+  </section>
+  <section class="feed">
+    {feed.map(item=>
+      <article class="entry">
+        <div class="meta">
+          <time>{item.date.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</time>
+          <span>{item.kind}</span>
+        </div>
+        <h2><a href={item.href}>{item.title}</a></h2>
+        {item.description&&<p>{item.description}</p>}
+        <div class="tags">{item.tags.map((tag:string)=><a href={'/tags/'+tag.toLowerCase()+'/'}>#{tag}</a>)}</div>
+      </article>
+    )}
+  </section>
+</BaseLayout>
