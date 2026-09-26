@@ -1,0 +1,5 @@
+---
+import {getCollection} from 'astro:content'; import BaseLayout from '../../layouts/BaseLayout.astro';
+const projects=await getCollection('projects',({data})=>!data.draft);
+---
+<BaseLayout title="Projects"><section class="hero"><div class="kicker">PROJECTS</div><h1>Projects</h1><p>Durable pages for things worth documenting beyond a single post.</p></section>{projects.length===0?<p>No project pages published yet.</p>:<section class="feed">{projects.map(p=><article class="entry"><div class="meta"><span>{p.data.status}</span></div><h2><a href={'/projects/'+p.id+'/'}>{p.data.title}</a></h2>{p.data.description&&<p>{p.data.description}</p>}</article>)}</section>}</BaseLayout>
